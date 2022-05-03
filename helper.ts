@@ -3,7 +3,7 @@ export const createEmpty = <T extends Record<string | number, unknown>>() => {
 };
 
 export interface FormParameters {
-  [key: string | number]: any;
+  [key: string | number]: unknown;
 }
 
 export interface IFormError<
