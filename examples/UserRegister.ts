@@ -9,10 +9,10 @@ export interface UserRegister {
   email: string;
 }
 
-export const validator: FormValidator<UserRegister, { other: string }> = (
+export const validator: FormValidator<UserRegister, ['other']> = (
   parameters: Partial<UserRegister>,
 ) => {
-  const errorMessages: FormError<UserRegister, { other: string }>['messages'] = {};
+  const errorMessages: FormError<UserRegister, ['other']>['messages'] = {};
 
   if (parameters.name !== undefined && parameters.name.length > 25) {
     errorMessages.name = '25文字以内で入力してください';
@@ -26,7 +26,7 @@ export const validator: FormValidator<UserRegister, { other: string }> = (
     errorMessages.other = '名前、メールアドレスは必須項目です';
   }
 
-  const { invalid, messages, hasError } = new FormErrorClass(
+  const { invalid, messages, hasError } = new FormErrorClass<UserRegister, ['other']>(
     parameters,
     errorMessages,
   );

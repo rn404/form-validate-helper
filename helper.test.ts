@@ -10,9 +10,9 @@ Deno.test('Testing FormErrorClass #1', () => {
       day: 24
     },
     skill: ['ability1', 'ability2', 'ability3']
-  }
+  } as const
 
-  const { invalid, hasError } = new FormErrorClass(
+  const { invalid, hasError } = new FormErrorClass<typeof parameters, ['birthDay']>(
     parameters,
     {
       birthDay: 'something message'
