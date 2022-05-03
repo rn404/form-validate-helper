@@ -1,0 +1,7 @@
+.DS_Store
+
+# Log file directory
+.log
+
+# Testing dummy files
+test/dummy_log_dir/*
