@@ -6,9 +6,9 @@ export interface FormParameters {
   [key: string | number]: any;
 }
 
-export interface IFormError<
+export interface FormError<
   T extends FormParameters,
-  K extends Array<string | number> = []
+  K extends Array<string | number> = [],
 > {
   invalid:
     & {
@@ -29,23 +29,23 @@ export interface IFormError<
 
 export type FormErrorMessages<
   T extends FormParameters,
-  K extends Array<string | number> = []
-> = IFormError<T, K>['messages']
+  K extends Array<string | number> = [],
+> = FormError<T, K>['messages'];
 
-export class FormError<
+class FormErrorInstance<
   T extends FormParameters,
-  K extends Array<string | number> = []
-> implements IFormError<T, K> {
+  K extends Array<string | number> = [],
+> implements FormError<T, K> {
   #parameters: Partial<T>;
 
   constructor(
     parameters: Partial<T>,
-    public messages: IFormError<T, K>['messages'],
+    public messages: FormError<T, K>['messages'],
   ) {
     this.#parameters = parameters;
   }
 
-  get invalid(): IFormError<T, K>['invalid'] {
+  get invalid(): FormError<T, K>['invalid'] {
     const paramsInvalid = createEmpty<{ [key in keyof T]: boolean }>();
     const messagesInvalid = createEmpty<
       { [key in keyof FormErrorMessages<T, K>]: boolean }
@@ -55,9 +55,11 @@ export class FormError<
       paramsInvalid[key] = this.messages[key] !== undefined;
     });
 
-    Object.keys(this.messages).forEach((key: keyof IFormError<T, K>['messages']) => {
-      messagesInvalid[key] = this.messages[key] !== undefined;
-    });
+    Object.keys(this.messages).forEach(
+      (key: keyof FormError<T, K>['messages']) => {
+        messagesInvalid[key] = this.messages[key] !== undefined;
+      },
+    );
 
     return Object.assign(paramsInvalid, messagesInvalid);
   }
@@ -71,13 +73,28 @@ export class FormError<
 
 export interface FormValidateResult<
   T extends FormParameters,
-  K extends Array<string | number> = []
+  K extends Array<string | number> = [],
 > {
   parameters: Partial<T>;
-  errors?: IFormError<T, K>;
+  errors?: FormError<T, K>;
 }
 
 export type FormValidator<
   T extends FormParameters,
-  K extends Array<string | number> = []
+  K extends Array<string | number> = [],
 > = (parameters: Partial<T>) => FormValidateResult<T, K>;
+
+export const createFormValidateResult = <
+  T extends FormParameters,
+  K extends Array<string | number> = [],
+>(parameters: Partial<T>, errorMessages: FormErrorMessages<T, K>): FormValidateResult<T, K> => {
+  const { invalid, messages, hasError } = new FormErrorInstance<T, K>(
+    parameters,
+    errorMessages,
+  );
+
+  return {
+    parameters,
+    errors: hasError === true ? { invalid, messages, hasError } : undefined,
+  };
+}

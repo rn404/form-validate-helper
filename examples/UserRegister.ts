@@ -1,8 +1,4 @@
-import {
-  FormErrorMessages,
-  FormError,
-  FormValidator,
-} from '../helper.ts';
+import { FormErrorMessages, FormValidator, createFormValidateResult } from '../helper.ts';
 
 export interface UserRegister {
   name: string;
@@ -26,13 +22,8 @@ export const validator: FormValidator<UserRegister, ['other']> = (
     errorMessages.other = '名前、メールアドレスは必須項目です';
   }
 
-  const { invalid, messages, hasError } = new FormError<UserRegister, ['other']>(
+  return createFormValidateResult<UserRegister, ['other']>(
     parameters,
     errorMessages,
-  );
-
-  return {
-    parameters,
-    errors: hasError === true ? { invalid, messages, hasError }: undefined,
-  };
+  )
 };

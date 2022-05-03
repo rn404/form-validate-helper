@@ -12,8 +12,8 @@ const emptyForm = {
 };
 
 const onlyEmailExistForm = {
-  email: 'hoge@hoge'
-}
+  email: 'hoge@hoge',
+};
 
 Deno.test('Hello world #1', () => {
   const actual = validator(fullFillForm);
@@ -34,12 +34,12 @@ Deno.test('Hello world #2', () => {
     errors: {
       invalid: {
         name: true,
-        email: false
+        email: false,
       },
       messages: {
-        name: '名前は必須項目です'
+        name: '名前は必須項目です',
       },
-      hasError: true
+      hasError: true,
     },
   };
 
@@ -55,14 +55,14 @@ Deno.test('Hello world #3', () => {
       invalid: {
         name: true,
         email: false,
-        other: true
+        other: true,
       },
       messages: {
         name: '名前は必須項目です',
         other: '名前、メールアドレスは必須項目です',
       },
-      hasError: true
-    }
+      hasError: true,
+    },
   };
 
   assertEquals(actual, expected);
