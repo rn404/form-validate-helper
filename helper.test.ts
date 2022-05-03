@@ -1,5 +1,5 @@
 import { assertEquals } from './dependencies.ts';
-import { FormError } from './helper.ts';
+import { createFormValidateResult } from './helper.ts';
 
 Deno.test('Testing FormErrorClass #1', () => {
   const parameters = {
@@ -12,20 +12,20 @@ Deno.test('Testing FormErrorClass #1', () => {
     skill: ['ability1', 'ability2', 'ability3'],
   } as const;
 
-  const { invalid, hasError } = new FormError<typeof parameters, ['birthDay']>(
+  const { errors } = createFormValidateResult<typeof parameters, ['birthDay']>(
     parameters,
     {
       birthDay: 'something message',
     },
   );
 
-  assertEquals(invalid, {
+  assertEquals(errors?.invalid, {
     name: false,
     birth: false,
     skill: false,
     birthDay: true,
   });
-  assertEquals(hasError, true);
+  assertEquals(errors?.hasError, true);
 });
 
 Deno.test('Testing FormErrorClass #2', () => {
@@ -34,18 +34,18 @@ Deno.test('Testing FormErrorClass #2', () => {
     email: undefined,
   } as const;
 
-  const { invalid, hasError } = new FormError<typeof parameters>(
+  const { errors } = createFormValidateResult<typeof parameters>(
     parameters,
     {
       email: 'something message',
     },
   );
 
-  assertEquals(invalid, {
+  assertEquals(errors?.invalid, {
     name: false,
     email: true,
   });
-  assertEquals(hasError, true);
+  assertEquals(errors?.hasError, true);
 });
 
 Deno.test('Testing FormErrorClass #3', () => {
@@ -54,16 +54,16 @@ Deno.test('Testing FormErrorClass #3', () => {
     email: undefined,
   } as const;
 
-  const { invalid, hasError } = new FormError<typeof parameters, ['other']>(
+  const { errors } = createFormValidateResult<typeof parameters, ['other']>(
     parameters,
     {
       email: 'something message',
     },
   );
 
-  assertEquals(invalid, {
+  assertEquals(errors?.invalid, {
     name: false,
     email: true,
   });
-  assertEquals(hasError, true);
+  assertEquals(errors?.hasError, true);
 });
