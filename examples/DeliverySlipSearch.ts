@@ -1,4 +1,8 @@
-import { FormErrorMessages, FormValidator, createFormValidateResult } from '../helper.ts';
+import {
+  createFormValidateResult,
+  FormErrorMessages,
+  FormValidator,
+} from '../helper.ts';
 
 /**
  * 普通は伝票番号を入力するだけだが、ここでは便宜上、
@@ -13,12 +17,13 @@ export interface DeliverySlipSearch {
   receiptData: Array<{ identifier: string }>;
 }
 
-type AdditionalKey = ['address_zipCode', 'address_area']
+type AdditionalKey = ['address_zipCode', 'address_area'];
 
 export const validator: FormValidator<DeliverySlipSearch, AdditionalKey> = (
   parameters: Partial<DeliverySlipSearch>,
 ) => {
-  const errorMessages: FormErrorMessages<DeliverySlipSearch, AdditionalKey> = {};
+  const errorMessages: FormErrorMessages<DeliverySlipSearch, AdditionalKey> =
+    {};
 
   if (
     parameters.receiptData === undefined || parameters.receiptData.length === 0
@@ -42,5 +47,5 @@ export const validator: FormValidator<DeliverySlipSearch, AdditionalKey> = (
   return createFormValidateResult<DeliverySlipSearch>(
     parameters,
     errorMessages,
-  )
+  );
 };

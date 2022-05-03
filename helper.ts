@@ -1,4 +1,4 @@
-export const createEmpty = <T extends Record<string | number, unknown>>() => {
+const createEmpty = <T extends Record<string | number, unknown>>() => {
   return {} as T;
 };
 
@@ -12,17 +12,17 @@ export interface FormError<
 > {
   invalid:
     & {
-      [key in keyof T]: boolean;
+      [key in keyof T]: boolean | Array<boolean>;
     }
     & {
-      [key in K[number]]?: boolean;
+      [key in K[number]]?: boolean | Array<boolean>;
     };
   messages:
     & {
-      [key in keyof T]?: string;
+      [key in keyof T]?: string | Array<string | undefined>;
     }
     & {
-      [key in K[number]]?: string;
+      [key in K[number]]?: string | Array<string | undefined>;
     };
   hasError: boolean;
 }
@@ -46,18 +46,36 @@ class FormErrorInstance<
   }
 
   get invalid(): FormError<T, K>['invalid'] {
-    const paramsInvalid = createEmpty<{ [key in keyof T]: boolean }>();
+    const paramsInvalid = createEmpty<
+      { [key in keyof T]: boolean | Array<boolean> }
+    >();
     const messagesInvalid = createEmpty<
-      { [key in keyof FormErrorMessages<T, K>]: boolean }
+      { [key in keyof FormErrorMessages<T, K>]: boolean | Array<boolean> }
     >();
 
     Object.keys(this.#parameters).forEach((key: keyof T) => {
-      paramsInvalid[key] = this.messages[key] !== undefined;
+      paramsInvalid[key] = Array.isArray(this.#parameters[key]) === true
+        ? new Array(this.#parameters[key].length)
+          .fill(false)
+          .map((_value, index) => {
+            const message = this.messages[key];
+            if (message === undefined) return false;
+
+            return message[index] !== undefined;
+          })
+        : paramsInvalid[key] = this.messages[key] !== undefined;
     });
 
     Object.keys(this.messages).forEach(
       (key: keyof FormError<T, K>['messages']) => {
-        messagesInvalid[key] = this.messages[key] !== undefined;
+        messagesInvalid[key] = Array.isArray(this.messages[key]) === true
+          ? new Array((this.messages[key] as Array<any>).length)
+            .fill(undefined)
+            .map((_message, index) => {
+              const value = this.messages[key] as Array<string | undefined>;
+              return value[index] !== undefined;
+            })
+          : this.messages[key] !== undefined;
       },
     );
 
@@ -65,9 +83,10 @@ class FormErrorInstance<
   }
 
   get hasError(): boolean {
-    return Object.keys(this.messages).map((key) => this.messages[key]).some((
-      value,
-    ) => value !== undefined);
+    return Object.keys(this.messages).map((key) => this.messages[key] ?? null)
+      .some((
+        value,
+      ) => value !== undefined);
   }
 }
 
@@ -76,7 +95,7 @@ export interface FormValidateResult<
   K extends Array<string | number> = [],
 > {
   parameters: Partial<T>;
-  errors?: FormError<T, K>;
+  errors?: Omit<FormError<T, K>, 'hasError'>;
 }
 
 export type FormValidator<
@@ -87,7 +106,10 @@ export type FormValidator<
 export const createFormValidateResult = <
   T extends FormParameters,
   K extends Array<string | number> = [],
->(parameters: Partial<T>, errorMessages: FormErrorMessages<T, K>): FormValidateResult<T, K> => {
+>(
+  parameters: Partial<T>,
+  errorMessages: FormErrorMessages<T, K>,
+): FormValidateResult<T, K> => {
   const { invalid, messages, hasError } = new FormErrorInstance<T, K>(
     parameters,
     errorMessages,
@@ -95,6 +117,6 @@ export const createFormValidateResult = <
 
   return {
     parameters,
-    errors: hasError === true ? { invalid, messages, hasError } : undefined,
+    errors: hasError === true ? { invalid, messages } : undefined,
   };
-}
+};

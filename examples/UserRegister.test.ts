@@ -16,54 +16,41 @@ const onlyEmailExistForm = {
 };
 
 Deno.test('Hello world #1', () => {
-  const actual = validator(fullFillForm);
+  const { errors } = validator(fullFillForm);
 
-  const expected = {
-    parameters: fullFillForm,
-    errors: undefined,
-  };
-
-  assertEquals(actual, expected);
+  assertEquals(errors, undefined);
 });
 
 Deno.test('Hello world #2', () => {
-  const actual = validator(onlyEmailExistForm);
+  const { errors } = validator(onlyEmailExistForm);
 
   const expected = {
-    parameters: onlyEmailExistForm,
-    errors: {
-      invalid: {
-        name: true,
-        email: false,
-      },
-      messages: {
-        name: '名前は必須項目です',
-      },
-      hasError: true,
+    invalid: {
+      name: true,
+      email: false,
+    },
+    messages: {
+      name: '名前は必須項目です',
     },
   };
 
-  assertEquals(actual, expected);
+  assertEquals(errors, expected);
 });
 
 Deno.test('Hello world #3', () => {
-  const actual = validator(emptyForm);
+  const { errors } = validator(emptyForm);
 
   const expected = {
-    parameters: emptyForm,
-    errors: {
-      invalid: {
-        name: true,
-        email: false,
-        other: true,
-      },
-      messages: {
-        name: '名前は必須項目です',
-        other: '名前、メールアドレスは必須項目です',
-      },
-      hasError: true,
+    invalid: {
+      name: true,
+      email: false,
+      other: true,
+    },
+    messages: {
+      name: '名前は必須項目です',
+      other: '名前、メールアドレスは必須項目です',
     },
   };
 
-  assertEquals(actual, expected);
+  assertEquals(errors, expected);
 });

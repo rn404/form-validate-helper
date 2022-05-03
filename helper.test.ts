@@ -22,10 +22,9 @@ Deno.test('Testing FormErrorClass #1', () => {
   assertEquals(errors?.invalid, {
     name: false,
     birth: false,
-    skill: false,
+    skill: [false, false, false],
     birthDay: true,
   });
-  assertEquals(errors?.hasError, true);
 });
 
 Deno.test('Testing FormErrorClass #2', () => {
@@ -45,7 +44,6 @@ Deno.test('Testing FormErrorClass #2', () => {
     name: false,
     email: true,
   });
-  assertEquals(errors?.hasError, true);
 });
 
 Deno.test('Testing FormErrorClass #3', () => {
@@ -65,5 +63,49 @@ Deno.test('Testing FormErrorClass #3', () => {
     name: false,
     email: true,
   });
-  assertEquals(errors?.hasError, true);
+});
+
+Deno.test('Testing FormErrorClass #4', () => {
+  const parameters = {
+    shipCodes: ['0001', '0002', '0003', '000004'],
+  } as const;
+
+  const { errors } = createFormValidateResult<typeof parameters>(
+    parameters,
+    {
+      shipCodes: [, , , 'too long'],
+    },
+  );
+
+  assertEquals(errors?.invalid, {
+    shipCodes: [false, false, false, true],
+  });
+});
+
+Deno.test('Testing FormErrorClass #5', () => {
+  const parameters = {
+    shipCodes: ['0001', '0002', '0003', '000004'],
+  } as const;
+
+  const { errors } = createFormValidateResult<typeof parameters>(
+    parameters,
+    {},
+  );
+
+  assertEquals(errors?.invalid, undefined);
+});
+
+Deno.test('Testing FormErrorClass #6', () => {
+  const parameters = {
+    skills: []
+  } as const;
+
+  const { errors } = createFormValidateResult<typeof parameters>(
+    parameters,
+    { skills: '1 or more required' },
+  );
+
+  assertEquals(errors?.invalid, {
+    skills: true
+  });
 });

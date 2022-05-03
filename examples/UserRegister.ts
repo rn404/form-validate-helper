@@ -1,4 +1,8 @@
-import { FormErrorMessages, FormValidator, createFormValidateResult } from '../helper.ts';
+import {
+  createFormValidateResult,
+  FormErrorMessages,
+  FormValidator,
+} from '../helper.ts';
 
 export interface UserRegister {
   name: string;
@@ -25,5 +29,5 @@ export const validator: FormValidator<UserRegister, ['other']> = (
   return createFormValidateResult<UserRegister, ['other']>(
     parameters,
     errorMessages,
-  )
+  );
 };
