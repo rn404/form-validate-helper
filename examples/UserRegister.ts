@@ -1,6 +1,6 @@
 import {
+  FormErrorMessages,
   FormError,
-  FormErrorClass,
   FormValidator,
 } from '../helper.ts';
 
@@ -12,7 +12,7 @@ export interface UserRegister {
 export const validator: FormValidator<UserRegister, ['other']> = (
   parameters: Partial<UserRegister>,
 ) => {
-  const errorMessages: FormError<UserRegister, ['other']>['messages'] = {};
+  const errorMessages: FormErrorMessages<UserRegister, ['other']> = {};
 
   if (parameters.name !== undefined && parameters.name.length > 25) {
     errorMessages.name = '25文字以内で入力してください';
@@ -26,7 +26,7 @@ export const validator: FormValidator<UserRegister, ['other']> = (
     errorMessages.other = '名前、メールアドレスは必須項目です';
   }
 
-  const { invalid, messages, hasError } = new FormErrorClass<UserRegister, ['other']>(
+  const { invalid, messages, hasError } = new FormError<UserRegister, ['other']>(
     parameters,
     errorMessages,
   );
