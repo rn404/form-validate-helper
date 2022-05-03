@@ -5,9 +5,6 @@
     "strict": true
   },
   "lint": {
-    "files": {
-      "include": ["../src/"]
-    },
     "rules": {
       "tags": ["recommended"],
       "include": ["ban-untagged-todo"],
@@ -15,9 +12,6 @@
     }
   },
   "fmt": {
-    "files": {
-      "include": ["../src/"]
-    },
     "options": {
       "useTabs": false,
       "lineWidth": 80,
