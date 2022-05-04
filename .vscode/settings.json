@@ -1,5 +1,8 @@
 {
   "deno.enable": true,
   "deno.lint": true,
-  "deno.config": ".config/deno.jsonc"
+  "deno.unstable": false,
+  "deno.config": ".config/deno.jsonc",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
 }
