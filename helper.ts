@@ -17,6 +17,9 @@ export interface FormError<
     & {
       [key in K[number]]?: boolean | Array<boolean>;
     };
+  /**
+   * alias -> FormErrorMessages<T, K>
+   */
   messages:
     & {
       [key in keyof T]?: string | Array<string | undefined>;
@@ -27,6 +30,9 @@ export interface FormError<
   hasError: boolean;
 }
 
+/**
+ * type alias
+ */
 export type FormErrorMessages<
   T extends FormParameters,
   K extends Array<string | number> = [],
@@ -40,7 +46,7 @@ class FormErrorInstance<
 
   constructor(
     parameters: Partial<T>,
-    public messages: FormError<T, K>['messages'],
+    public messages: FormErrorMessages<T, K>,
   ) {
     this.#parameters = parameters;
   }
@@ -67,7 +73,7 @@ class FormErrorInstance<
     });
 
     Object.keys(this.messages).forEach(
-      (key: keyof FormError<T, K>['messages']) => {
+      (key: keyof FormErrorMessages<T, K>) => {
         messagesInvalid[key] = Array.isArray(this.messages[key]) === true
           ? new Array((this.messages[key] as Array<any>).length)
             .fill(undefined)
