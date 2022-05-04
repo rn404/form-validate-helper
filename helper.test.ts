@@ -163,15 +163,15 @@ Deno.test('createFormValidateResult: errorMessages always override invalid, even
       area: 'area01',
       town: 'town01',
       contact: {
-        telnumber: '810-9999-9999'
-      }
-    }
+        telnumber: '810-9999-9999',
+      },
+    },
   } as const;
 
   const { errors } = createFormValidateResult<typeof parameters>(
     parameters,
     {
-      address: 'something wrong'
+      address: 'something wrong',
     },
   );
 
