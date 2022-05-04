@@ -16,7 +16,7 @@ import {
   createFormValidateResult,
   FormErrorMessages,
   FormValidator,
-} from 'helper.ts'
+} from 'helper.ts';
 
 export interface UserRegister {
   name: string;
@@ -38,27 +38,24 @@ export const validator: FormValidator<UserRegister> = (
 };
 ```
 
-`html` での使われ方は、以下のようなものを想定しています.
+`template` での使い方は、以下のようにします.
+
 ```ts
 // examples.ts
-import {
-  UserRegister,
-  validator
-} from 'validator.ts'
+import { UserRegister, validator } from 'validator.ts';
 
 const parameters: UserRegister = {
   /* ... */
-}
+};
 
-const { errors } = validator(parameters)
+const { errors } = validator(parameters);
 
 if (errors === undefined) {
-  displayError('フォームの内容を確認してください')
-  return
+  displayError('フォームの内容を確認してください');
+  return;
 }
 
-postForm(parameters)
-
+postForm(parameters);
 ```
 
 ```tsx
